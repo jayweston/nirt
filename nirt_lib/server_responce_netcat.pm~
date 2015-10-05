@@ -1,0 +1,22 @@
+ #!/usr/bin/perl
+
+package server_responce_netcat;
+
+my $netCat_name = "nc";
+
+#Subroutine to process Help
+sub set_Netcat_name{
+	#Change the netcal call to the remaining data
+	$netCat_name = shift;
+
+	#Reply that command was enter successfully
+	my $reply = server_responce_color::get_color_start()."NetCat command call changed to '$netCat_name'\n".server_responce_color::get_color_end();
+	$client_socket->send($reply);
+	return;
+}
+
+sub get_Netcat_name{
+
+}
+
+1127;
