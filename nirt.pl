@@ -17,3 +17,5 @@ use nirt_lib::server_response_netcat;
 server_connection::find_local_IP_address();
 print "Waiting for netcat connection: ".server_response_netcat::get_netcat_name()." ".server_connection::get_local_IP_address()." 1127\n";
 server_connection::start_listening();
+
+#test
