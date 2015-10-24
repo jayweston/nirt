@@ -1,0 +1,84 @@
+ #!/usr/bin/perl
+
+use strict;
+use warnings;
+
+#Subroutine to process data
+sub serverResponse{
+	#'command' replies with all available commands.
+	if($data =~ /^command /){
+		#remove all character from the begining of the string upto and including the first space.
+		$data =~ s/^\S+\s*//;
+
+		#Get command to run, make file for command, open new netcat for command, and log command
+		serverResponseCommand();
+
+	#'comment' replies with all available commands.
+	}elsif($data =~ /^comment /){
+		#remove all character from the begining of the string upto and including the first space.
+		$data =~ s/^\S+\s*//;
+
+		#Get command to run, make file for command, open new netcat for command, and log command
+		serverResponseComment();
+		
+	#'device' replies with all available commands.
+	}elsif($data =~ /^device /){
+		#remove all character from the begining of the string upto and including the first space.
+		$data =~ s/^\S+\s*//;
+
+		#Get device name and make a new working directory for said device
+		serverResponseDevice();
+
+	#'file' replies with all available commands.
+	}elsif($data =~ /^file /){
+		#remove all character from the begining of the string upto and including the first space.
+		$data =~ s/^\S+\s*//;
+
+		#Get file name to download, open new netcat for file, and log entry
+		serverResponseFile();
+
+	#'help' replies with all available commands.
+	}elsif($data eq "help"){
+		my $reply = $color_start.	"\tcommand [string -args] - Send a command output to the logging system.\n".
+						"\tcomment [delimiter] - Send a comment to the loggins system.\n".
+						"\tdevice [string] - Set the victim's device name (working directory).\n".
+						"\texit - Stop or suspend the investigation.\n".
+						"\tfile [string] - Senf a file to the logging system.\n".
+						"\thelp - Your looking at it.\n".
+						"\txp - Change to no color output on the victim's machine.\n".
+						"\tunix - Change to color output on the victim's machine (set by default).\n".
+						"\tnetcat [string] - Change the command name used to call netcat.\n".
+			    $color_end;
+		$client_socket->send($reply);
+
+	#Change to no color output
+	}elsif($data eq "xp"){
+		$color_start = "";
+		$color_end = "";
+
+	#Change to no color output
+	}elsif($data eq "unix"){
+		$color_start = "\e[0;34m";
+		$color_end = "\e[0m";
+
+	#Change to no color output
+	}elsif($data =~ /^netcat /){
+		#remove all character from the begining of the string upto and including the first space.
+		$data =~ s/^\S+\s*//;		
+
+		#Change the netcal call to the remaining data
+		$netCat_name = $data;
+
+		#Reply that command was enter successfully
+		my $reply = $color_start."NetCat command call changed to '$data'\n".$color_end;
+		$client_socket->send($reply);
+
+	#If the command does not match any of the above reply with error message and the command.
+	}else{
+		my $reply = $color_start."Unrecognized command: $data\n".$color_end;
+		$client_socket->send($reply);
+	}
+
+	my $reply = $color_start."Command: ".$color_end;
+	$client_socket->send($reply);
+}

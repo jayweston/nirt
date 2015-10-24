@@ -1,0 +1,56 @@
+ #!/usr/bin/perl
+
+use strict;
+use warnings;
+
+#Subroutine to get secondary command
+sub secondaryCommand{
+	my $delimiter = shift;
+	my $secondaryData = "";
+	while (1){
+
+		#Wait for message from client
+		$client_socket->recv($recieved_data,1024);
+
+		#Append received content to the end of data.  If data does not end with the set delimiter then rerun loop to get more data.
+		$secondaryData = $secondaryData.$recieved_data;
+
+			print $secondaryData;
+
+		#make sure it is a complete command and then process it.
+		if ($secondaryData =~ /$delimiter/) {
+
+			#remove delimiter and everything after it.
+			$secondaryData =~ s/$delimiter.*//;
+			
+			#Process data and set it back to blank.
+			return ($secondaryData);
+		}
+	}
+}
+
+#Subroutine to get secondary connection
+sub secondaryConnection{
+
+	#build the netcat command and run it
+	my $cmd = $netCat_name;
+	$cmd .= " -l";
+	$cmd .= " -p 1128";
+	$cmd .= " >";
+	$cmd .= " '$currentDirectory/$command_spaceless'";
+	system($cmd);
+}
+
+#Suberoutine to get locap ip address
+sub getLocalIP_address {
+	my $socket = IO::Socket::INET->new(
+		Proto       => 'udp',
+		PeerAddr    => '198.41.0.4', # a.root-servers.net
+		PeerPort    => '53', # DNS
+	);
+
+	#A side-effect of making a socket connection is that our IP address is available from the 'sockhost' method
+	my $local_ip_address = $socket->sockhost;
+
+	return $local_ip_address;
+}
