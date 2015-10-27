@@ -5,13 +5,12 @@ package process_response;
 sub process_command{
 
 	my $data = shift;
-
 	#'command' replies with all available commands.
 	if($data =~ /^command /){
 		#remove all character from the begining of the string upto and including the first space.
 		$data =~ s/^\S+\s*//;
 
-		#Get command to run, make file for command, open new netcat for command, and log command
+		#Get command to run and log command
 		server_response_command::send_command($data);
 
 	#'comment' replies with all available commands.
@@ -19,7 +18,7 @@ sub process_command{
 		#remove all character from the begining of the string upto and including the first space.
 		$data =~ s/^\S+\s*//;
 
-		#Get command to run, make file for command, open new netcat for command, and log command
+		#Get command and log it
 		server_response_comment::send_comment($data);
 
 	#'device' replies with all available commands.
@@ -35,12 +34,12 @@ sub process_command{
 		#remove all character from the begining of the string upto and including the first space.
 		$data =~ s/^\S+\s*//;
 
-		#Get file name to download, open new netcat for file, and log entry
+		#Get file name to download and log entry
 		server_response_file::send_file($data);
 
 	#'help' replies with all available commands.
 	}elsif($data eq "help"){
-		#Get file name to download, open new netcat for file, and log entry
+		#Display help menu
 		server_response_help::display_help();
 
 	#Change to no color output
@@ -51,13 +50,23 @@ sub process_command{
 		#Turn color output on the victims machine on or off.
 		server_response_color::turn_color($data);
 
-	#Change to no color output
-	}elsif($data =~ /^netcat /){
+	#Change username
+	}elsif($data =~ /^user /){
 		#remove all character from the begining of the string upto and including the first space.
-		$data =~ s/^\S+\s*//;		
+		$data =~ s/^\S+\s*//;
 
-		#Change what string is use to call netcat.
-		server_response_netcat::set_netcat_name($data);
+		#Turn color output on the victims machine on or off.
+		server_response_user::change_user($data);
+
+
+	#Change to no color output
+	}elsif($data =~ /^victim /){
+		#remove all character from the begining of the string upto and including the first space.
+		$data =~ s/^\S+\s*//;
+
+		#Turn color output on the victims machine on or off.
+		server_response_victim::change_os($data);
+
 
 	#If the command does not match any of the above reply with error message and the command.
 	}else{

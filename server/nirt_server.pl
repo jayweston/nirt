@@ -12,8 +12,10 @@ use nirt_lib::server_response_comment;
 use nirt_lib::server_response_device;
 use nirt_lib::server_response_file;
 use nirt_lib::server_response_help;
-use nirt_lib::server_response_netcat;
+use nirt_lib::server_response_victim;
+use nirt_lib::server_response_user;
 
+server_response_device::set_device("not_set");
 server_connection::find_local_IP_address();
-print "Waiting for netcat connection: ".server_response_netcat::get_netcat_name()." ".server_connection::get_local_IP_address()." 1127\n";
+print "Waiting for connection: ".server_connection::get_local_IP_address()." 1127\n";
 server_connection::start_listening();

@@ -11,7 +11,7 @@ sub send_comment{
 	my $delimiter = shift;
 
 	#Get comment	
-	my $reply = server_response_color::get_color_start()."$delimiter ".server_response_color::get_color_end();
+	my $reply = "$delimiter ";
 	server_connection::send_message($reply);
 
 	my $comment = server_connection::get_secondary_command($delimiter);
@@ -28,12 +28,8 @@ sub send_comment{
 	my $currentDateTime = localtime->strftime('%F %T');
 	my $filename = helper_functions::get_current_directory().'/log.txt';
 	open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
-	say $fh "\ncomment: $comment\nAccepted at: $currentDateTime\nMD5: $md5\nSHA1: $sha1\n";
+	say $fh "comment: $comment\nAccepted at: $currentDateTime\nby: ".server_response_user::get_user()."\nMD5: $md5\nSHA1: $sha1\n";
 	close $fh;
-
-	#Confirm that comment was accepted
-	$reply = server_response_color::get_color_start()."Comment logged.\n".server_response_color::get_color_end();
-	server_connection::send_message($reply);
 
 	return;
 }

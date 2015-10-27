@@ -6,7 +6,6 @@ use Time::Piece;
 
 #Subroutine to process the command command
 sub send_command{
-
 	#get device name and set working directory
 	$command = shift;
 	$command_spaceless = $command;
@@ -15,37 +14,65 @@ sub send_command{
 	$command_spaceless =~ s/\\/-/g;
 	$command_spaceless = "commands/$command_spaceless";
 
-	#establish connection
-	my $reply = server_response_color::get_color_start()."Please run: $command | ".server_response_netcat::get_netcat_name()." ".server_connection::get_local_IP_address()." 1128\n".server_response_color::get_color_end();
-	server_connection::send_message($reply);
-	helper_functions::create_secondary_connection($command_spaceless);
-	
-	#request what to change the device to
-	$reply = server_response_color::get_color_start()."Complete.\n".server_response_color::get_color_end();
-	server_connection::send_message($reply);
+	my $os_version = server_response_victim::get_os();
+	my $command_2_use = "";
+
+	if ($os_version eq "linux"){ 
+		$command_2_use = builtin_linux_commands($command);
+	}elsif($os_version eq "windows"){
+		$command_2_use = builtin_windows_commands($command);
+	}else{
+		$command_2_use = $command; 
+	}
+
+	server_connection::send_message($command_2_use, "off");
+
+	my $command_output = server_connection::get_secondary_command("`~`");
+
+	#create file with output
+	my $filename = helper_functions::get_current_directory()."/$command_spaceless";
+	open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
+		say $fh $command_output;
+	close $fh;
 
 	#Get hash for MD5
 	my $md5_digest = Digest::MD5->new;
-	open(my $fh, helper_functions::get_current_directory()."/$command_spaceless") or die "Could not open file '".helper_functions::get_current_directory()."/$command_spaceless' $!";	
-		$md5_digest->addfile( $fh );
-	close $fh;
+	$md5_digest->add( $command_output );
 	my $md5 = $md5_digest->hexdigest;
 
 	#Get hashes for SHA1
 	my $sha1_digest = Digest::SHA1->new;
-	open($fh, helper_functions::get_current_directory()."/$command_spaceless") or die "Could not open file '".helper_functions::get_current_directory()."/$command_spaceless' $!";
-		$sha1_digest->addfile( $fh );
-	close $fh;
+	$sha1_digest->add( $command_output );
 	my $sha1 = $sha1_digest->hexdigest;
 
 	#Create log entry
 	my $currentDateTime = localtime->strftime('%F %T');
-	my $filename = helper_functions::get_current_directory().'/log.txt';
+	$filename = helper_functions::get_current_directory().'/log.txt';
 	open($fh, '>>', $filename) or die "Could not open file '$filename' $!";
-	say $fh "\nCommand: $command\nAccepted at: $currentDateTime\nMD5: $md5\nSHA1: $sha1\n";
+	say $fh "Command: $command\nAccepted at: $currentDateTime\nby: ".server_response_user::get_user()."\nMD5: $md5\nSHA1: $sha1\n";
 	close $fh;
-	
 	return;
+}
+
+sub builtin_linux_commands{
+	my $command = shift;
+	if ($command =~ /^find/){$command = "./programs/linux/internal/".$command;}
+	elsif ($command =~ /^date/){$command = "./programs/linux/internal/".$command;}
+	return $command;
+}
+
+sub builtin_windows_commands{
+	my $command = shift;
+	if ($command =~ /^nbtstat/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^whoami/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^fport/){$command = "./programs/windows/fport/".$command;}
+	return $command;
+}
+
+sub builtin_windows_commands{
+	my $command = shift;
+
+	return $command;
 }
 
 1127;

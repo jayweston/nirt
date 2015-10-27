@@ -21,7 +21,6 @@ sub get_secondary_command{
 	my $delimiter = shift;
 	my $secondaryData = "";
 	while (1){
-
 		#Wait for message from client
 		$client_socket->recv($recieved_data,1024);
 
@@ -30,11 +29,9 @@ sub get_secondary_command{
 
 		#make sure it is a complete command and then process it.
 		if ($secondaryData =~ /$delimiter/) {
-
 			#remove delimiter and everything after it.
 			$secondaryData =~ s/$delimiter.*//;
 			chomp($secondaryData);
-	
 			#Process data and set it back to blank.
 			return ($secondaryData);
 		}
@@ -51,14 +48,9 @@ sub start_listening{
 	my $user_command="";
 	my $recieved_data = "";
 
-	#Get device name and create working directory for the invstigation.
-	server_response_device::get_device();
-
 	#Print welcome message.
-	my $user_message = server_response_color::get_color_start()."Type 'help' for a command list.\n".server_response_color::get_color_end();
-	send_message($user_message);
-
-	$user_message = server_response_color::get_color_start()."Command: ".server_response_color::get_color_end();
+	print "Connected to client.\n";
+	my $user_message = "Victim's OS is set to ".server_response_victim::get_os().".\nType 'help' for a command list.\nCommand: ";
 	send_message($user_message);
 
 	#Run until exit is typed.
@@ -71,7 +63,7 @@ sub start_listening{
 
 		#Make sure it is a complete command and then process it.
 		if ($user_command eq "exit\n"){
-			$user_message = server_response_color::get_color_start()."Exiting\n".server_response_color::get_color_end();
+			$user_message = "Exiting\n";
 			send_message($user_message);
 			last;
 		}elsif (substr($user_command, -1) eq "\n"){
@@ -84,10 +76,8 @@ sub start_listening{
 			$user_command="";
 
 			#Send output message for next command.
-			$user_message = server_response_color::get_color_start()."Command: ".server_response_color::get_color_end();
+			$user_message = "Command: ";
 			send_message($user_message);
-
-		#If user wants to exit.
 		}
 	}
 
@@ -95,14 +85,20 @@ sub start_listening{
 	my $current_date_time = localtime->strftime("%F %T");
 	my $filename = helper_functions::get_current_directory()."/log.txt";
 	open(my $fh, ">>", $filename) or die "Could not open file '$filename': $!";
-	say $fh "Invstigation ended at $current_date_time";
+	say $fh "Invstigation ended at $current_date_time\n";
 	close $fh;
 	return;
 }
 
 sub send_message{
 	$message = shift;
-	$client_socket->send($message);
+	$show_color = shift;
+	if ($show_color eq "off"){
+		$client_socket->send($message);
+	}else{
+		$message = server_response_color::get_color_start()."$message".server_response_color::get_color_end();
+		$client_socket->send($message);
+	}
 	return;
 }
 
