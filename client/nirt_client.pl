@@ -38,9 +38,7 @@ while ($x==1) {
 		my $sent_command = "";
 		$socket->recv($sent_command,1024);
 		my $command_output = `$sent_command`;
-		print "sss\n";
 		$socket->send($command_output."`~`");
-		print "ttt\n";
 	}elsif ($send_data =~ /^file /){
 		$send_data =~ s/^\S+\s*//;
 		chomp($send_data);
