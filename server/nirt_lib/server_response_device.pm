@@ -4,7 +4,7 @@ package server_response_device;
 use File::Path qw(make_path);
 use Time::Piece;
 
-my $device = "";
+my $device = "not_set";
 
 #Subroutine to process the device command
 sub set_device{
@@ -39,6 +39,11 @@ sub set_device{
 
 sub get_device{
 	return $device;
+}
+
+sub setup_device{
+	$device = shift;
+	return;
 }
 
 1127;

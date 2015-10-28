@@ -13,8 +13,7 @@ sub display_help{
 			"\tcolor [on/off] - Turn the color on or off.\n".
 			"\tuser [username] - Change the username that is displayed in the log file (currently ".server_response_user::get_user().").\n".
 			"\tvictim [".server_response_victim::get_os_options()."] - Change the OS of the victim's computer (currently ".server_response_victim::get_os().").\n";
-	server_connection::send_message($reply);
-	return;
+	return $reply;
 }
 
 1127;

@@ -40,8 +40,8 @@ sub process_command{
 	#'help' replies with all available commands.
 	}elsif($data eq "help"){
 		#Display help menu
-		server_response_help::display_help();
-
+		my $help_message = server_response_help::display_help();
+		return $help_message;
 	#Change to no color output
 	}elsif($data =~ /^color /){
 		#remove all character from the begining of the string upto and including the first space.
@@ -73,7 +73,7 @@ sub process_command{
 		my $reply = $color_start."Unrecognized command: $data\n".$color_end;
 		server_connection::send_message($reply);
 	}
-	return;
+	return "";
 }
 
 1127;

@@ -1,27 +1,20 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use 5.010;
 use IO::Socket;
 
-#command line input parameter <ip address> <port>
-#if their is no 1st input parameter set it to local host.
-if ($ARGV[0] eq ""){
-	$ARGV[0] = "localhost";
-}
-
-#if their is no 2nd input parameter set it to 1127.
-if ($ARGV[1] eq ""){
-	$ARGV[1] = "1127";
-}
+my ($server_ip, $server_port) = @ARGV;
+if (not defined $server_ip){$server_ip = "localhost";}
+if (not defined $server_port){$server_port = "1127";}
 
 #use input parameters to set socket.
 my $socket = new IO::Socket::INET (
-    PeerAddr  => $ARGV[0],
-    PeerPort  =>  $ARGV[1],
+    PeerAddr  => $server_ip,
+    PeerPort  =>  $server_port,
     Proto => 'tcp',
 )
-or die "Couldn't connect to Server\n";
+or die "Could not connect to server. Try nirt_client [ip_address] [port]\n";
+$socket->autoflush(1);
 
 #upon connecting recieve initial data and print it to screen.
 my $recv_data = "";
@@ -45,7 +38,9 @@ while ($x==1) {
 		my $sent_command = "";
 		$socket->recv($sent_command,1024);
 		my $command_output = `$sent_command`;
+		print "sss\n";
 		$socket->send($command_output."`~`");
+		print "ttt\n";
 	}elsif ($send_data =~ /^file /){
 		$send_data =~ s/^\S+\s*//;
 		chomp($send_data);
@@ -65,6 +60,23 @@ while ($x==1) {
 			$socket->send("File not found.`~`");
 		}
 		
+	}elsif ($send_data =~ /^comment /){
+		$socket->recv($recv_data,1024);
+		print $recv_data;
+		$send_data =~ s/^\S+\s*//;
+		my $delimiter = $send_data;
+		my $secondaryData = "";
+		while (1){
+			my $recieved_data = <STDIN>;
+			$secondaryData = $secondaryData.$recieved_data;
+			if ($secondaryData =~ /$delimiter/) {
+				$secondaryData =~ s/$delimiter.*//;
+				chomp($secondaryData);
+				$secondaryData = $secondaryData.$delimiter;
+				$socket->send($secondaryData);
+				last;
+			}
+		}
 	}
 	$socket->recv($recv_data,1024);
 	print $recv_data;

@@ -4,17 +4,22 @@ package server_connection;
 use IO::Socket;
 use Time::Piece;
 
-#define new socket and initialize it.
-my $socket = new IO::Socket::INET (
-	LocalPort => "1127",
-	Proto => "tcp",
-	Listen => 1,
-	Reuse => 1,
-);die "Coudn't open socket" unless $socket;
-
 my $client_socket;
-
+my $socket;
 my $local_ip_address = "127.0.0.1";
+my $port_number = "1127";
+
+#define new socket and initialize it.
+sub create_socket(){
+	$socket = new IO::Socket::INET (
+		LocalPort => $port_number,
+		Proto => "tcp",
+		Listen => 1,
+		Reuse => 1,
+		type => SOCK_STREAM,
+	);die "Coudn't open socket" unless $socket;
+	$socket->autoflush(1);
+}
 
 #Subroutine to get secondary command
 sub get_secondary_command{
@@ -22,7 +27,7 @@ sub get_secondary_command{
 	my $secondaryData = "";
 	while (1){
 		#Wait for message from client
-		$client_socket->recv($recieved_data,1024);
+		$client_socket->recv($recieved_data,106496);
 
 		#Append received content to the end of data.  If data does not end with the set delimiter then rerun loop to get more data.
 		$secondaryData = $secondaryData.$recieved_data;
@@ -41,7 +46,6 @@ sub get_secondary_command{
 
 sub start_listening{
 	$client_socket = $socket->accept();
-	$socket->autoflush(1);
 	$client_socket->autoflush(1);
 
 	#Declare variables that will be used.
@@ -72,11 +76,12 @@ sub start_listening{
 			chop($user_command);
 
 			#Process data and set it back to blank.
-			process_response::process_command($user_command);
+			$user_message="";			
+			$user_message= process_response::process_command($user_command);
 			$user_command="";
 
 			#Send output message for next command.
-			$user_message = "Command: ";
+			$user_message = $user_message."Command: ";
 			send_message($user_message);
 		}
 	}
@@ -119,6 +124,15 @@ sub find_local_IP_address {
 #Suberoutine to get locap ip address
 sub get_local_IP_address {
 	return $local_ip_address;
+}
+
+sub get_port_number{
+	return $port_number;
+}
+
+sub set_port_number{
+	$port_number = shift;
+	return;
 }
 
 1127;

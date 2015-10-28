@@ -25,6 +25,7 @@ sub send_command{
 		$command_2_use = $command; 
 	}
 
+	$command_2_use = $command_2_use." 2>&1";
 	server_connection::send_message($command_2_use, "off");
 
 	my $command_output = server_connection::get_secondary_command("`~`");
@@ -49,14 +50,14 @@ sub send_command{
 	my $currentDateTime = localtime->strftime('%F %T');
 	$filename = helper_functions::get_current_directory().'/log.txt';
 	open($fh, '>>', $filename) or die "Could not open file '$filename' $!";
-	say $fh "Command: $command\nAccepted at: $currentDateTime\nby: ".server_response_user::get_user()."\nMD5: $md5\nSHA1: $sha1\n";
+	say $fh "Command: $command_2_use\nAccepted at: $currentDateTime\nby: ".server_response_user::get_user()."\nMD5: $md5\nSHA1: $sha1\n";
 	close $fh;
 	return;
 }
 
 sub builtin_linux_commands{
 	my $command = shift;
-	if ($command =~ /^find/){$command = "./programs/linux/internal/".$command;}
+	if ($command =~ /^find/){$command = "./programs/linux/internal/".$command." -printf '%m;%Ax;%AT;%Tx;%TT;%Cx;%CT;%U;%G;%s;%p;\\n'";}
 	elsif ($command =~ /^date/){$command = "./programs/linux/internal/".$command;}
 	return $command;
 }
