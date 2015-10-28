@@ -3,9 +3,13 @@ use strict;
 use warnings;
 use IO::Socket;
 
-my ($server_ip, $server_port) = @ARGV;
-if (not defined $server_ip){$server_ip = "localhost";}
-if (not defined $server_port){$server_port = "1127";}
+my $server_ip = "127.11.27.10";
+my $server_port = 1127;
+
+my $total_argv = $#ARGV;
+for (my $i = 0; $i <= $total_argv; $i=$i+2){
+	process_argv($ARGV[$i], $ARGV[$i+1]);
+}
 
 #use input parameters to set socket.
 my $socket = new IO::Socket::INET (
@@ -78,4 +82,31 @@ while ($x==1) {
 	}
 	$socket->recv($recv_data,1024);
 	print $recv_data;
+}
+
+sub process_argv{
+	my $flag = shift;
+	my $flag_data = shift;
+
+	if (lc $flag eq "-ip"){
+		$server_ip = $flag_data;
+	}elsif(lc $flag eq "-help"){
+		print_help();
+		exit;
+	}elsif(lc $flag eq "-port"){
+		if ($flag_data < 1000 || $flag_data > 65535){
+			die "Invalid port.";
+		}
+		$server_port = $flag_data;
+	}else{
+		print "Illegal use of flags.  Please use -help.";
+		exit;
+	}
+	return;
+}
+
+sub print_help{
+	print "\tip [IP Address]\tUse the given IP address to connect to the logging system (default 127.0.0.1).\n";
+	print "\tport [1000 - 65535]\tChange the port number to start on (default is 1127).\n";
+	return;
 }

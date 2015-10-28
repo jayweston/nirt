@@ -2,10 +2,13 @@
 use strict;
 use warnings;
 
-if (defined $ARGV[0]){server_connection::set_port_number($ARGV[0]);}
-if (defined $ARGV[1]){server_response_device::setup_device($ARGV[1]);}
+my $total_argv = $#ARGV;
+for (my $i = 0; $i <= $total_argv; $i=$i+2){
+	process_argv::process_argv($ARGV[$i], $ARGV[$i+1]);
+}
 
 use nirt_lib::helper_functions;
+use nirt_lib::process_argv;
 use nirt_lib::process_responses;
 use nirt_lib::server_connection;
 use nirt_lib::server_response_color;
