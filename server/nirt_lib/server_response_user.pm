@@ -23,5 +23,10 @@ sub get_user{
 	return $current_user;
 }
 
+sub set_user{
+	$current_user = shift;
+	return;
+}
+
 1127;
 

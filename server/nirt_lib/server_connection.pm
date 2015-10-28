@@ -132,6 +132,9 @@ sub get_port_number{
 
 sub set_port_number{
 	$port_number = shift;
+	if ($port_number < 1000 || $port_number > 65535){
+		die "Invalid port.";
+	}
 	return;
 }
 
