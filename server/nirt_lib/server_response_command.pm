@@ -57,7 +57,7 @@ sub send_command{
 
 sub builtin_linux_commands{
 	my $command = shift;
-	if ($command =~ /^find/){$command = "./programs/linux/internal/".$command." -printf '%m;%Ax;%AT;%Tx;%TT;%Cx;%CT;%U;%G;%s;%p;\\n'";}
+	if ($command =~ /^ffind/){$command = "./programs/linux/internal/".$command." -printf '%m;%Ax;%AT;%Tx;%TT;%Cx;%CT;%U;%G;%s;%p;\\n'";}
 	elsif ($command =~ /^date/){$command = "./programs/linux/internal/".$command;}
 	return $command;
 }
