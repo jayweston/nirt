@@ -67,6 +67,7 @@ sub builtin_windows_commands{
 	if ($command =~ /^nbtstat/){$command = "./programs/windows/internal/".$command;}
 	elsif ($command =~ /^whoami/){$command = "./programs/windows/internal/".$command;}
 	elsif ($command =~ /^fport/){$command = "./programs/windows/fport/".$command;}
+	elsif ($command =~ /^netstat/){$command = "./programs/windows/internal/".$command;}
 	return $command;
 }
 
