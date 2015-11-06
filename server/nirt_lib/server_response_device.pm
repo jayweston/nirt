@@ -31,7 +31,7 @@ sub set_device{
 	my $currentDateTime = localtime->strftime('%F %T');
 	my $filename = helper_functions::get_current_directory()."/log.txt";
 	open(my $fh, '>>', $filename) or die "Could not open file '$filename' $!";
-	say $fh "Invstigation started at $currentDateTime\nby: ".server_response_user::get_user()."\n";
+	say $fh "Investigation started at $currentDateTime\nby: ".server_response_user::get_user()."\n";
 	close $fh;
 
 	return;
