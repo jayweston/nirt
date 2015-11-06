@@ -68,6 +68,14 @@ sub builtin_windows_commands{
 	elsif ($command =~ /^whoami/){$command = "./programs/windows/internal/".$command;}
 	elsif ($command =~ /^fport/){$command = "./programs/windows/fport/".$command;}
 	elsif ($command =~ /^netstat/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^psloggedon/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^at/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^psservice/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^psinfo/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^psfile/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^psloglist/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^psping/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^systeminfo/){$command = "./programs/windows/internal/".$command;}
 	return $command;
 }
 
