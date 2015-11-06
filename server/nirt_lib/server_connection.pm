@@ -90,7 +90,7 @@ sub start_listening{
 	my $current_date_time = localtime->strftime("%F %T");
 	my $filename = helper_functions::get_current_directory()."/log.txt";
 	open(my $fh, ">>", $filename) or die "Could not open file '$filename': $!";
-	say $fh "Invstigation ended at $current_date_time\n";
+	say $fh "Investigation ended at $current_date_time\n";
 	close $fh;
 	return;
 }
