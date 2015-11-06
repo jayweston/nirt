@@ -57,8 +57,15 @@ sub send_command{
 
 sub builtin_linux_commands{
 	my $command = shift;
-	if ($command =~ /^ffind/){$command = "./programs/linux/internal/".$command." -printf '%m;%Ax;%AT;%Tx;%TT;%Cx;%CT;%U;%G;%s;%p;\\n'";}
+	if ($command =~ /^find/){$command = "./programs/linux/internal/".$command." -printf '%m;%Ax;%AT;%Tx;%TT;%Cx;%CT;%U;%G;%s;%p;\\n'";}
 	elsif ($command =~ /^date/){$command = "./programs/linux/internal/".$command;}
+	elsif ($command =~ /^crontab/){$command = "./programs/linux/internal/".$command;}
+	elsif ($command =~ /^mount/){$command = "./programs/linux/internal/".$command;}
+	elsif ($command =~ /^netstat/){$command = "./programs/linux/internal/".$command;}
+	elsif ($command =~ /^ps/){$command = "./programs/linux/internal/".$command;}
+	elsif ($command =~ /^pwd/){$command = "./programs/linux/internal/".$command;}
+	elsif ($command =~ /^uname/){$command = "./programs/linux/internal/".$command;}
+	elsif ($command =~ /^w.procps/){$command = "./programs/linux/internal/".$command;}
 	return $command;
 }
 
@@ -76,6 +83,8 @@ sub builtin_windows_commands{
 	elsif ($command =~ /^psloglist/){$command = "./programs/windows/internal/".$command;}
 	elsif ($command =~ /^psping/){$command = "./programs/windows/internal/".$command;}
 	elsif ($command =~ /^systeminfo/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^pslist/){$command = "./programs/windows/internal/".$command;}
+	elsif ($command =~ /^strings/){$command = "./programs/windows/internal/".$command;}
 	return $command;
 }
 
